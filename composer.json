@@ -1,0 +1,41 @@
+{
+    "name": "syastrebov/laravel-circuit-breaker",
+    "description": "Laravel package for circuit breaker wrapper.",
+    "authors": [
+        {
+            "name": "syastrebov",
+            "email": "serg.yastrebov@gmail.com",
+            "homepage": "https://github.com/syastrebov"
+        }
+    ],
+    "license": "MIT",
+    "prefer-stable": true,
+    "config": {
+        "preferred-install": "dist"
+    },
+    "require": {
+        "php": "^8.3",
+        "syastrebov/circuit-breaker": "0.0.1",
+        "illuminate/contracts": "^12.0",
+        "illuminate/support": "^12.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.5",
+        "orchestra/testbench": "^10.9",
+        "phpstan/phpstan": "^2.1",
+        "squizlabs/php_codesniffer": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "CircuitBreaker\\Laravel\\": "src/",
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CircuitBreaker\\Laravel\\CircuitBreakerServiceProvider"
+            ]
+        }
+    }
+}
