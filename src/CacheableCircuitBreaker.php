@@ -4,6 +4,7 @@ namespace CircuitBreaker\Laravel;
 
 use CircuitBreaker\CircuitBreakerConfig;
 use CircuitBreaker\Contracts\CircuitBreakerInterface;
+use CircuitBreaker\Enums\CircuitBreakerState;
 use Illuminate\Contracts\Cache\Repository;
 
 readonly class CacheableCircuitBreaker implements CircuitBreakerInterface
@@ -17,6 +18,26 @@ readonly class CacheableCircuitBreaker implements CircuitBreakerInterface
     public function getConfig(): CircuitBreakerConfig
     {
         return $this->circuitBreaker->getConfig();
+    }
+
+    public function getState(string $name): CircuitBreakerState
+    {
+        return $this->circuitBreaker->getState($name);
+    }
+
+    public function getStateTimestamp(string $name): int
+    {
+        return $this->circuitBreaker->getStateTimestamp($name);
+    }
+
+    public function getFailedAttempts(string $name): int
+    {
+        return $this->circuitBreaker->getFailedAttempts($name);
+    }
+
+    public function getHalfOpenAttempts(string $name): int
+    {
+        return $this->circuitBreaker->getHalfOpenAttempts($name);
     }
 
     public function run(string $name, callable $action, ?callable $fallback = null): mixed
