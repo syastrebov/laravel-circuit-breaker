@@ -12,10 +12,9 @@ class FacadeTest extends TestCase
     #[DefineEnvironment('useMemoryProvider')]
     public function testFacadeWithoutName(): void
     {
-        $this->assertInstanceOf(
-            \CircuitBreaker\CircuitBreaker::class,
-            CircuitBreaker::create()
-        );
+        $circuit = CircuitBreaker::create();
+        $this->assertInstanceOf(\CircuitBreaker\CircuitBreaker::class, $circuit);
+        $this->assertEquals('default', $circuit->getConfig()->prefix);
     }
 
     #[DefineEnvironment('useMemoryProvider')]
@@ -30,19 +29,20 @@ class FacadeTest extends TestCase
             'fallback_or_null' => false,
         ]);
 
-        $this->assertInstanceOf(
-            \CircuitBreaker\CircuitBreaker::class,
-            CircuitBreaker::create('custom')
-        );
+        $circuit = CircuitBreaker::create('custom');
+        $this->assertInstanceOf(\CircuitBreaker\CircuitBreaker::class, $circuit);
+        $this->assertEquals('custom', $circuit->getConfig()->prefix);
     }
 
     #[DefineEnvironment('useMemoryProvider')]
     public function testCacheableFacadeWithoutName(): void
     {
-        $this->assertInstanceOf(
-            CacheableCircuitBreaker::class,
-            CircuitBreaker::createCacheable()
-        );
+        $cacheableCircuit = CircuitBreaker::createCacheable();
+        $this->assertInstanceOf(CacheableCircuitBreaker::class, $cacheableCircuit);
+
+        $circuit = $this->getPrivateProperty($cacheableCircuit, 'circuitBreaker');
+        $this->assertInstanceOf(\CircuitBreaker\CircuitBreaker::class, $circuit);
+        $this->assertEquals('default', $circuit->getConfig()->prefix);
     }
 
     #[DefineEnvironment('useMemoryProvider')]
@@ -57,9 +57,11 @@ class FacadeTest extends TestCase
             'fallback_or_null' => false,
         ]);
 
-        $this->assertInstanceOf(
-            CacheableCircuitBreaker::class,
-            CircuitBreaker::createCacheable('custom')
-        );
+        $cacheableCircuit = CircuitBreaker::createCacheable('custom');
+        $this->assertInstanceOf(CacheableCircuitBreaker::class, $cacheableCircuit);
+
+        $circuit = $this->getPrivateProperty($cacheableCircuit, 'circuitBreaker');
+        $this->assertInstanceOf(\CircuitBreaker\CircuitBreaker::class, $circuit);
+        $this->assertEquals('custom', $circuit->getConfig()->prefix);
     }
 }

@@ -37,14 +37,13 @@ return [
         ],
     ],
 ];
-
 ~~~
 
 ## Usage
 
 ### Simple example:
 
-Default config:
+#### Default config:
 
 ~~~php
 use CircuitBreaker\Laravel\CircuitBreakerFactory;
@@ -62,7 +61,25 @@ public function request(CircuitBreakerFactory $circuitBreaker): string
 }
 ~~~
 
-Custom config:
+#### Custom config:
+
+circuit-breaker.php
+
+~~~php
+return [
+
+    'configs' => [
+        'api' => [
+            'retries' => 3,
+            'closed_threshold' => 3,
+            'half_open_threshold' => 3,
+            'retry_interval' => 1000,
+            'open_timeout' => 60,
+            'fallback_or_null' => false,
+        ],
+    ],
+];
+~~~
 
 ~~~php
 use CircuitBreaker\Laravel\Facades\CircuitBreaker;
@@ -112,29 +129,75 @@ use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 public function request(): string
 {
     return CircuitBreaker::create()->run(
-        'test',
+        '{endpoint}',
         static function () {
             $response = (string) (new Client)->get('https://{domain}/api/{endpoint}')->getBody();
-            Cache::set('circuit.test.response', $response);
+            Cache::set('circuit.{endpoint}.response', $response);
     
             return $response;
         },
         static function () {
-            return Cache::get('circuit.test.response');
+            return Cache::get('circuit.{endpoint}.response');
         }
     );
 }
 ~~~
 
-Using helper:
+Using CacheableCircuitBreaker:
 
 ~~~php
 use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
 public function request(): string
 {
-    return CircuitBreaker::createCacheable()->run('test', static function () {
+    return CircuitBreaker::createCacheable()->run('{endpoint}', static function () {
         return (string) (new Client)->get('https://{domain}/api/{endpoint}')->getBody();
+    });
+}
+~~~
+
+## Multiple instances
+
+circuit-breaker.php
+
+~~~php
+return [
+
+    'configs' => [
+        'api1' => [
+            'retries' => 3,
+            'closed_threshold' => 3,
+            'half_open_threshold' => 3,
+            'retry_interval' => 1000,
+            'open_timeout' => 60,
+            'fallback_or_null' => false,
+        ],
+        'api2' => [
+            'retries' => 5,
+            'closed_threshold' => 5,
+            'half_open_threshold' => 5,
+            'retry_interval' => 3000,
+            'open_timeout' => 120,
+            'fallback_or_null' => false,
+        ],
+    ],
+];
+~~~
+
+~~~php
+use CircuitBreaker\Laravel\Facades\CircuitBreaker;
+
+public function requestApi1(): string
+{
+    return CircuitBreaker::createCacheable('api1')->run('/users', static function () {
+        return (string) (new Client)->get('https://{api1.domain}/api/users')->getBody();
+    });
+}
+
+public function requestApi2(): string
+{
+    return CircuitBreaker::createCacheable('api2')->run('/users', static function () {
+        return (string) (new Client)->get('https://{api2.domain}/api/users')->getBody();
     });
 }
 ~~~

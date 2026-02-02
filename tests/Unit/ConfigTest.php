@@ -2,8 +2,6 @@
 
 namespace Tests\Unit;
 
-use CircuitBreaker\CircuitBreaker;
-use CircuitBreaker\CircuitBreakerConfig;
 use CircuitBreaker\Laravel\CircuitBreakerFactory;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
 use Tests\TestCase;
@@ -16,8 +14,9 @@ class ConfigTest extends TestCase
         $this->app['config']->set('circuit-breaker.configs', []);
 
         $factory = $this->app->get(CircuitBreakerFactory::class);
-        $config = $this->getConfig($factory->create());
+        $config = $factory->create()->getConfig();
 
+        $this->assertEquals('default', $config->prefix);
         $this->assertEquals(3, $config->retries);
         $this->assertEquals(3, $config->closedThreshold);
         $this->assertEquals(3, $config->halfOpenThreshold);
@@ -32,8 +31,9 @@ class ConfigTest extends TestCase
         $this->app['config']->set('circuit-breaker.configs', []);
 
         $factory = $this->app->get(CircuitBreakerFactory::class);
-        $config = $this->getConfig($factory->create('default'));
+        $config = $factory->create('default')->getConfig();
 
+        $this->assertEquals('default', $config->prefix);
         $this->assertEquals(3, $config->retries);
         $this->assertEquals(3, $config->closedThreshold);
         $this->assertEquals(3, $config->halfOpenThreshold);
@@ -55,8 +55,9 @@ class ConfigTest extends TestCase
         ]);
 
         $factory = $this->app->get(CircuitBreakerFactory::class);
-        $config = $this->getConfig($factory->create('default'));
+        $config = $factory->create('default')->getConfig();
 
+        $this->assertEquals('default', $config->prefix);
         $this->assertEquals(2, $config->retries);
         $this->assertEquals(4, $config->closedThreshold);
         $this->assertEquals(6, $config->halfOpenThreshold);
@@ -78,8 +79,9 @@ class ConfigTest extends TestCase
         ]);
 
         $factory = $this->app->get(CircuitBreakerFactory::class);
-        $config = $this->getConfig($factory->create('custom'));
+        $config = $factory->create('custom')->getConfig();
 
+        $this->assertEquals('custom', $config->prefix);
         $this->assertEquals(5, $config->retries);
         $this->assertEquals(7, $config->closedThreshold);
         $this->assertEquals(9, $config->halfOpenThreshold);
@@ -94,8 +96,9 @@ class ConfigTest extends TestCase
         $this->app['config']->set('circuit-breaker.configs.custom', []);
 
         $factory = $this->app->get(CircuitBreakerFactory::class);
-        $config = $this->getConfig($factory->create('custom'));
+        $config = $factory->create('custom')->getConfig();
 
+        $this->assertEquals('custom', $config->prefix);
         $this->assertEquals(3, $config->retries);
         $this->assertEquals(3, $config->closedThreshold);
         $this->assertEquals(3, $config->halfOpenThreshold);
@@ -114,10 +117,5 @@ class ConfigTest extends TestCase
 
         $factory = $this->app->make(CircuitBreakerFactory::class);
         $factory->create('custom');
-    }
-
-    protected function getConfig(CircuitBreaker $circuitBreaker): CircuitBreakerConfig
-    {
-        return $this->getPrivateProperty($circuitBreaker, 'config');
     }
 }

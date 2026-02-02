@@ -2,6 +2,7 @@
 
 namespace CircuitBreaker\Laravel;
 
+use CircuitBreaker\CircuitBreakerConfig;
 use CircuitBreaker\Contracts\CircuitBreakerInterface;
 use Illuminate\Contracts\Cache\Repository;
 
@@ -13,9 +14,14 @@ readonly class CacheableCircuitBreaker implements CircuitBreakerInterface
     ) {
     }
 
+    public function getConfig(): CircuitBreakerConfig
+    {
+        return $this->circuitBreaker->getConfig();
+    }
+
     public function run(string $name, callable $action, ?callable $fallback = null): mixed
     {
-        $cacheKey = "circuit.{$name}.response";
+        $cacheKey = $this->buildCacheKey($name);
 
         return $this->circuitBreaker->run(
             $name,
@@ -44,5 +50,10 @@ readonly class CacheableCircuitBreaker implements CircuitBreakerInterface
                 return null;
             }
         );
+    }
+
+    protected function buildCacheKey(string $name): string
+    {
+        return "circuit.{$this->circuitBreaker->getConfig()->prefix}.{$name}.response";
     }
 }

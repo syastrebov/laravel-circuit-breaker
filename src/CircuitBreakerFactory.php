@@ -32,7 +32,10 @@ readonly class CircuitBreakerFactory
     protected function getConfig(string $configName): CircuitBreakerConfig
     {
         if (isset($this->configs[$configName])) {
-            return CircuitBreakerConfig::create($this->configs[$configName]);
+            return CircuitBreakerConfig::create([
+                ...$this->configs[$configName],
+                'prefix' => $configName,
+            ]);
         } elseif ($configName === 'default') {
             return new CircuitBreakerConfig();
         }

@@ -1,6 +1,6 @@
 {
     "name": "syastrebov/laravel-circuit-breaker",
-    "description": "Laravel package for circuit breaker wrapper.",
+    "description": "Laravel package for circuit breaker.",
     "authors": [
         {
             "name": "syastrebov",
@@ -15,7 +15,7 @@
     },
     "require": {
         "php": "^8.3",
-        "syastrebov/circuit-breaker": "0.0.2",
+        "syastrebov/circuit-breaker": "0.0.4",
         "illuminate/contracts": "^12.0",
         "illuminate/support": "^12.0"
     },
