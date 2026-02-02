@@ -82,13 +82,13 @@ public function request(): string
 ### Stub response:
 
 ~~~php
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
+use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
-public function request(CircuitBreakerFactory $circuitBreaker): string
+public function request(): string
 {
     $client = new Client();
 
-    return $circuitBreaker->create()->run(
+    return CircuitBreaker::create()->run(
         '{endpoint}',
         static function () {
             return (string) $client->get('https://domain/api/{endpoint}')->getBody();
@@ -107,11 +107,11 @@ public function request(CircuitBreakerFactory $circuitBreaker): string
 ### Cache response:
 
 ~~~php
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
+use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
-public function request(CircuitBreakerFactory $circuitBreaker): string
+public function request(): string
 {
-    return $circuitBreaker->create()->run(
+    return CircuitBreaker::create()->run(
         'test',
         static function () {
             $response = (string) (new Client)->get('https://{domain}/api/{endpoint}')->getBody();
@@ -129,13 +129,12 @@ public function request(CircuitBreakerFactory $circuitBreaker): string
 Using helper:
 
 ~~~php
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
-use CircuitBreaker\Laravel\Request;
+use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
-public function request(CircuitBreakerFactory $circuitBreaker): string
+public function request(): string
 {
-    return $circuitBreaker->create()->run(...Request::cacheable('test', static function () {
+    return CircuitBreaker::createCacheable()->run('test', static function () {
         return (string) (new Client)->get('https://{domain}/api/{endpoint}')->getBody();
-    }));
+    });
 }
 ~~~

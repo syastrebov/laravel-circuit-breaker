@@ -3,11 +3,11 @@
 namespace Tests\Unit;
 
 use CircuitBreaker\CircuitBreaker;
-use CircuitBreaker\Provider\DatabaseProvider;
-use CircuitBreaker\Provider\ProviderInterface;
-use CircuitBreaker\Provider\MemcachedProvider;
-use CircuitBreaker\Provider\MemoryProvider;
-use CircuitBreaker\Provider\RedisProvider;
+use CircuitBreaker\Providers\DatabaseProvider;
+use CircuitBreaker\Providers\ProviderInterface;
+use CircuitBreaker\Providers\MemcachedProvider;
+use CircuitBreaker\Providers\MemoryProvider;
+use CircuitBreaker\Providers\RedisProvider;
 use CircuitBreaker\Laravel\CircuitBreakerFactory;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
 use Tests\TestCase;

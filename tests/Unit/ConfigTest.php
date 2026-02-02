@@ -13,6 +13,24 @@ class ConfigTest extends TestCase
     #[DefineEnvironment('useMemoryProvider')]
     public function testDefaultConfig(): void
     {
+        $this->app['config']->set('circuit-breaker.configs', []);
+
+        $factory = $this->app->get(CircuitBreakerFactory::class);
+        $config = $this->getConfig($factory->create());
+
+        $this->assertEquals(3, $config->retries);
+        $this->assertEquals(3, $config->closedThreshold);
+        $this->assertEquals(3, $config->halfOpenThreshold);
+        $this->assertEquals(1000, $config->retryInterval);
+        $this->assertEquals(60, $config->openTimeout);
+        $this->assertEquals(false, $config->fallbackOrNull);
+    }
+
+    #[DefineEnvironment('useMemoryProvider')]
+    public function testDefaultConfigByName(): void
+    {
+        $this->app['config']->set('circuit-breaker.configs', []);
+
         $factory = $this->app->get(CircuitBreakerFactory::class);
         $config = $this->getConfig($factory->create('default'));
 
@@ -79,8 +97,8 @@ class ConfigTest extends TestCase
         $config = $this->getConfig($factory->create('custom'));
 
         $this->assertEquals(3, $config->retries);
-        $this->assertEquals(5, $config->closedThreshold);
-        $this->assertEquals(5, $config->halfOpenThreshold);
+        $this->assertEquals(3, $config->closedThreshold);
+        $this->assertEquals(3, $config->halfOpenThreshold);
         $this->assertEquals(1000, $config->retryInterval);
         $this->assertEquals(60, $config->openTimeout);
         $this->assertEquals(false, $config->fallbackOrNull);
