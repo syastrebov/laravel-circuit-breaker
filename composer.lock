@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0351206b19b2b7bf667e2fc764555781",
+    "content-hash": "cf8e758f53a64498a1ad89eccb0defd2",
     "packages": [
         {
             "name": "brick/math",
@@ -3089,16 +3089,16 @@
         },
         {
             "name": "syastrebov/circuit-breaker",
-            "version": "v0.0.1",
+            "version": "v0.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/syastrebov/circuit-breaker.git",
-                "reference": "a7d062a05f5ff9f21cb12a4e583a943080a8cdc3"
+                "reference": "f1449f29fed1f46f615c3472c9d0b51ae117df73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/syastrebov/circuit-breaker/zipball/a7d062a05f5ff9f21cb12a4e583a943080a8cdc3",
-                "reference": "a7d062a05f5ff9f21cb12a4e583a943080a8cdc3",
+                "url": "https://api.github.com/repos/syastrebov/circuit-breaker/zipball/f1449f29fed1f46f615c3472c9d0b51ae117df73",
+                "reference": "f1449f29fed1f46f615c3472c9d0b51ae117df73",
                 "shasum": ""
             },
             "require": {
@@ -3131,9 +3131,9 @@
             ],
             "description": "Circuit breaker wrapper for microservices and api calls.",
             "support": {
-                "source": "https://github.com/syastrebov/circuit-breaker/tree/v0.0.1"
+                "source": "https://github.com/syastrebov/circuit-breaker/tree/v0.0.2"
             },
-            "time": "2026-01-30T06:56:09+00:00"
+            "time": "2026-02-01T16:44:18+00:00"
         },
         {
             "name": "symfony/clock",

@@ -2,11 +2,12 @@
 
 namespace CircuitBreaker\Laravel;
 
-use CircuitBreaker\Provider\DatabaseProvider;
-use CircuitBreaker\Provider\ProviderInterface;
-use CircuitBreaker\Provider\MemcachedProvider;
-use CircuitBreaker\Provider\MemoryProvider;
-use CircuitBreaker\Provider\RedisProvider;
+use CircuitBreaker\Providers\DatabaseProvider;
+use CircuitBreaker\Providers\ProviderInterface;
+use CircuitBreaker\Providers\MemcachedProvider;
+use CircuitBreaker\Providers\MemoryProvider;
+use CircuitBreaker\Providers\RedisProvider;
+use Illuminate\Cache\Repository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Foundation\Application as LaravelApplication;
 use Illuminate\Support\Facades\Cache;
@@ -39,6 +40,7 @@ class CircuitBreakerServiceProvider extends ServiceProvider
             return new CircuitBreakerFactory(
                 $app->get(ProviderInterface::class),
                 $app['config']->get('circuit-breaker.configs'),
+                $app->get(Repository::class),
                 $app->get(LoggerInterface::class)
             );
         });
