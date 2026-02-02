@@ -103,12 +103,10 @@ use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
 public function request(): string
 {
-    $client = new Client();
-
     return CircuitBreaker::create()->run(
         '{endpoint}',
         static function () {
-            return (string) $client->get('https://domain/api/{endpoint}')->getBody();
+            return (string) (new Client)->get('https://domain/api/{endpoint}')->getBody();
         },
         static function () {
             return json_encode([
