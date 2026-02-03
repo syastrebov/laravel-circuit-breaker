@@ -23,6 +23,9 @@ class CircuitBreakerServiceProvider extends ServiceProvider
         $source = realpath($raw = __DIR__ . '/../config/circuit-breaker.php') ?: $raw;
         if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
             $this->publishes([$source => config_path('circuit-breaker.php')]);
+            $this->publishes([
+                __DIR__ . '/../database/migrations/' => database_path('migrations'),
+            ], 'circuit-breaker-migrations');
         }
 
         $this->mergeConfigFrom($source, 'circuit-breaker');
