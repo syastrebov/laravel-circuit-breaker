@@ -14,7 +14,6 @@ services:
       MYSQL_PASSWORD: password
 
   php:
-    container_name: laravel-circuit-breaker-php
     build:
       context: .
       dockerfile: ./docker/php/Dockerfile
