@@ -10,11 +10,11 @@ use CircuitBreaker\Providers\RedisProvider;
 use Illuminate\Cache\Repository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Foundation\Application as LaravelApplication;
+use Illuminate\Log\LogManager;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
-use Psr\Log\LoggerInterface;
 
 class CircuitBreakerServiceProvider extends ServiceProvider
 {
@@ -40,11 +40,16 @@ class CircuitBreakerServiceProvider extends ServiceProvider
     private function registerFactory(): void
     {
         $this->app->singleton(CircuitBreakerFactory::class, function (Container $app) {
+            $logger = $app->make(LogManager::class);
+            if ($channel = $app['config']->get('circuit-breaker.logger.channel')) {
+                $logger = $logger->channel($channel);
+            }
+
             return new CircuitBreakerFactory(
                 $app->get(ProviderInterface::class),
                 $app['config']->get('circuit-breaker.configs'),
                 $app->get(Repository::class),
-                $app->get(LoggerInterface::class)
+                $logger
             );
         });
     }

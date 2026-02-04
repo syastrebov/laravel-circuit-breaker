@@ -6,6 +6,10 @@ return [
 
     'driver' => 'memory',
 
+    'logger' => [
+        'channel' => '',
+    ],
+
     'connections' => [
         'redis' => [
             'connection' => 'default',

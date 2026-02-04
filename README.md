@@ -15,6 +15,10 @@ return [
 
     // Supported drivers (redis, memcached, database, memory) 
     'driver' => 'redis',
+    
+    'logger' => [
+        'channel' => '',
+    ],
 
     'connections' => [
         'redis' => [
