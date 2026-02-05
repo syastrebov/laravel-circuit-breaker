@@ -9,13 +9,19 @@ use CircuitBreaker\Contracts\ProviderInterface;
 use Illuminate\Cache\Repository;
 use Psr\Log\LoggerInterface;
 
-readonly class CircuitBreakerFactory
+final readonly class CircuitBreakerFactory
 {
+    /**
+     * @param ProviderInterface $provider
+     * @param array[] $configs
+     * @param Repository $repository
+     * @param ?LoggerInterface $logger
+     */
     public function __construct(
         private ProviderInterface $provider,
         private array $configs,
         private Repository $repository,
-        private LoggerInterface $logger
+        private ?LoggerInterface $logger
     ) {
     }
 

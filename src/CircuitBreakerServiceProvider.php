@@ -7,6 +7,7 @@ use CircuitBreaker\Providers\DatabaseProvider;
 use CircuitBreaker\Providers\MemcachedProvider;
 use CircuitBreaker\Providers\MemoryProvider;
 use CircuitBreaker\Providers\RedisProvider;
+use Illuminate\Cache\MemcachedStore;
 use Illuminate\Cache\Repository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Foundation\Application as LaravelApplication;
@@ -16,11 +17,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
 
-class CircuitBreakerServiceProvider extends ServiceProvider
+final class CircuitBreakerServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        $source = realpath($raw = __DIR__ . '/../config/circuit-breaker.php') ?: $raw;
+        $raw = __DIR__ . '/../config/circuit-breaker.php';
+        $path = realpath($raw);
+        $source = is_string($path) ? $path : $raw;
+
         if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
             $this->publishes([$source => config_path('circuit-breaker.php')]);
             $this->publishes([
@@ -31,6 +35,7 @@ class CircuitBreakerServiceProvider extends ServiceProvider
         $this->mergeConfigFrom($source, 'circuit-breaker');
     }
 
+    #[\Override]
     public function register(): void
     {
         $this->registerProvider();
@@ -62,7 +67,7 @@ class CircuitBreakerServiceProvider extends ServiceProvider
 
             return match ($type) {
                 'redis' => $this->buildRedisProvider($connections['redis'] ?? []),
-                'memcached' => $this->buildMemcachedProvider($connections['memcached'] ?? []),
+                'memcached' => $this->buildMemcachedProvider(),
                 'database' => $this->buildDatabaseProvider($connections['database'] ?? []),
                 'memory' => $this->buildMemoryProvider(),
                 default => throw new \Exception('Driver not supported'),
@@ -75,9 +80,14 @@ class CircuitBreakerServiceProvider extends ServiceProvider
         return new RedisProvider(Redis::connection($config['connection'] ?? null)->client());
     }
 
-    private function buildMemcachedProvider(?array $config = null): MemcachedProvider
+    private function buildMemcachedProvider(): MemcachedProvider
     {
-        return new MemcachedProvider(Cache::store('memcached')->getStore()->getMemcached());
+        $store = Cache::store('memcached')->getStore();
+        if ($store instanceof MemcachedStore) {
+            return new MemcachedProvider($store->getMemcached());
+        }
+
+        throw new \Exception('Memcached driver not supported');
     }
 
     private function buildDatabaseProvider(?array $config = null): DatabaseProvider

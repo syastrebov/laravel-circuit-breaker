@@ -7,7 +7,7 @@ use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
 use Tests\TestCase;
 
-class FacadeTest extends TestCase
+final class FacadeTest extends TestCase
 {
     #[DefineEnvironment('useMemoryProvider')]
     public function testFacadeWithoutName(): void

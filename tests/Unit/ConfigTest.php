@@ -6,7 +6,7 @@ use CircuitBreaker\Laravel\CircuitBreakerFactory;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
 use Tests\TestCase;
 
-class ConfigTest extends TestCase
+final class ConfigTest extends TestCase
 {
     #[DefineEnvironment('useMemoryProvider')]
     public function testDefaultConfig(): void

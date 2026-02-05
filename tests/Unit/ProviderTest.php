@@ -12,7 +12,7 @@ use CircuitBreaker\Laravel\CircuitBreakerFactory;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
 use Tests\TestCase;
 
-class ProviderTest extends TestCase
+final class ProviderTest extends TestCase
 {
     #[DefineEnvironment('useMemoryProvider')]
     public function testBound()

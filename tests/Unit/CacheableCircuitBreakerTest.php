@@ -7,7 +7,7 @@ use CircuitBreaker\Laravel\CircuitBreakerFactory;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
 use Tests\TestCase;
 
-class CacheableCircuitBreakerTest extends TestCase
+final class CacheableCircuitBreakerTest extends TestCase
 {
     #[DefineEnvironment('useMemoryProvider')]
     public function testBound()
