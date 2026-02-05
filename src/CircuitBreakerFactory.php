@@ -5,7 +5,7 @@ namespace CircuitBreaker\Laravel;
 use CircuitBreaker\CircuitBreaker;
 use CircuitBreaker\CircuitBreakerConfig;
 use CircuitBreaker\Contracts\CircuitBreakerInterface;
-use CircuitBreaker\Providers\ProviderInterface;
+use CircuitBreaker\Contracts\ProviderInterface;
 use Illuminate\Cache\Repository;
 use Psr\Log\LoggerInterface;
 

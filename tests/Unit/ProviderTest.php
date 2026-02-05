@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use CircuitBreaker\CircuitBreaker;
+use CircuitBreaker\Contracts\ProviderInterface;
 use CircuitBreaker\Providers\DatabaseProvider;
-use CircuitBreaker\Providers\ProviderInterface;
 use CircuitBreaker\Providers\MemcachedProvider;
 use CircuitBreaker\Providers\MemoryProvider;
 use CircuitBreaker\Providers\RedisProvider;
