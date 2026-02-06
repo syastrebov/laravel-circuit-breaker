@@ -3,7 +3,7 @@
 namespace Tests\Unit\Extensions;
 
 use CircuitBreaker\Enums\CircuitBreakerState;
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
+use CircuitBreaker\Laravel\CacheableCircuitBreaker;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
 use Tests\TestCase;
 
@@ -19,10 +19,8 @@ final class CacheableCircuitBreakerTest extends TestCase
 
         $name = __CLASS__ . __METHOD__;
 
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
-
-        $circuit = $factory->createCacheable();
+        $circuit = $this->app->make(CacheableCircuitBreaker::class);
+        $this->assertInstanceOf(CacheableCircuitBreaker::class, $circuit);
 
         $response = $circuit->run($name, static function () {
             return '{"data": "response"}';

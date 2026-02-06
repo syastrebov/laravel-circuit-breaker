@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\NoExtensions;
 
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
+use CircuitBreaker\CircuitBreaker;
 use CircuitBreaker\Providers\DatabaseProvider;
 use CircuitBreaker\Providers\PredisProvider;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
@@ -19,7 +19,7 @@ class ProviderTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Redis extension is not loaded.');
 
-        $this->app->get(CircuitBreakerFactory::class);
+        $this->app->make(CircuitBreaker::class);
     }
 
     #[DefineEnvironment('usePredisProvider')]
@@ -28,9 +28,9 @@ class ProviderTest extends TestCase
         $this->app['config']->set('circuit-breaker.provider', 'predis');
         $this->app['config']->set('database.redis.client', 'predis');
 
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
-        $this->assertInstanceOf(PredisProvider::class, $this->getProvider($factory->create()));
+        $circuit = $this->app->make(CircuitBreaker::class);
+        $this->assertInstanceOf(CircuitBreaker::class, $circuit);
+        $this->assertInstanceOf(PredisProvider::class, $this->getProvider($circuit));
     }
 
     #[DefineEnvironment('useMemcachedProvider')]
@@ -39,16 +39,16 @@ class ProviderTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Memcached extension is not loaded.');
 
-        $this->app->get(CircuitBreakerFactory::class);
+        $this->app->make(CircuitBreaker::class);
     }
 
     #[DefineEnvironment('useDatabaseProvider')]
     public function testDatabaseProvider(): void
     {
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
+        $circuit = $this->app->make(CircuitBreaker::class);
+        $this->assertInstanceOf(CircuitBreaker::class, $circuit);
 
-        $provider = $this->getProvider($factory->create());
+        $provider = $this->getProvider($circuit);
         $this->assertInstanceOf(DatabaseProvider::class, $provider);
 
         $pdo = $this->getPrivateProperty($provider, 'pdo');

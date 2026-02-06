@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Extensions;
 
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
+use CircuitBreaker\CircuitBreaker;
 use CircuitBreaker\Providers\DatabaseProvider;
 use CircuitBreaker\Providers\MemcachedProvider;
 use CircuitBreaker\Providers\MemoryProvider;
@@ -15,50 +15,50 @@ final class ProviderTest extends TestCase
     #[DefineEnvironment('useMemoryProvider')]
     public function testBound()
     {
-        $this->assertTrue($this->app->bound(CircuitBreakerFactory::class));
+        $this->assertTrue($this->app->bound(CircuitBreaker::class));
     }
 
     #[DefineEnvironment('useMemoryProvider')]
     public function testMemoryProvider(): void
     {
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
-        $this->assertInstanceOf(MemoryProvider::class, $this->getProvider($factory->create()));
+        $circuit = $this->app->make(CircuitBreaker::class);
+
+        $this->assertInstanceOf(CircuitBreaker::class, $circuit);
+        $this->assertInstanceOf(MemoryProvider::class, $this->getProvider($circuit));
     }
 
     #[DefineEnvironment('useRedisProvider')]
     public function testRedisProvider(): void
     {
-        $this->app['config']->set('circuit-breaker.provider', 'redis');
+        $circuit = $this->app->make(CircuitBreaker::class);
 
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
-        $this->assertInstanceOf(RedisProvider::class, $this->getProvider($factory->create()));
+        $this->assertInstanceOf(CircuitBreaker::class, $circuit);
+        $this->assertInstanceOf(RedisProvider::class, $this->getProvider($circuit));
     }
 
     #[DefineEnvironment('useMemcachedProvider')]
     public function testMemcachedProvider(): void
     {
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
-        $this->assertInstanceOf(MemcachedProvider::class, $this->getProvider($factory->create()));
+        $circuit = $this->app->make(CircuitBreaker::class);
+
+        $this->assertInstanceOf(CircuitBreaker::class, $circuit);
+        $this->assertInstanceOf(MemcachedProvider::class, $this->getProvider($circuit));
     }
 
     #[DefineEnvironment('useDatabaseProvider')]
     public function testDatabaseProvider(): void
     {
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
+        $circuit = $this->app->make(CircuitBreaker::class);
 
-        $provider = $this->getProvider($factory->create('default'));
-        $this->assertInstanceOf(DatabaseProvider::class, $provider);
+        $this->assertInstanceOf(CircuitBreaker::class, $circuit);
+        $this->assertInstanceOf(DatabaseProvider::class, $this->getProvider($circuit));
     }
 
     #[DefineEnvironment('useDatabaseProvider')]
     public function testDefaultTableName(): void
     {
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $provider = $this->getProvider($factory->create('default'));
+        $circuit = $this->app->make(CircuitBreaker::class);
+        $provider = $this->getProvider($circuit);
 
         $this->assertEquals('circuit_breaker', $this->getPrivateProperty($provider, 'table'));
     }
@@ -68,8 +68,8 @@ final class ProviderTest extends TestCase
     {
         $this->app['config']->set('circuit-breaker.connections.database.table', null);
 
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $provider = $this->getProvider($factory->create('default'));
+        $circuit = $this->app->make(CircuitBreaker::class);
+        $provider = $this->getProvider($circuit);
 
         $this->assertEquals('circuit_breaker', $this->getPrivateProperty($provider, 'table'));
     }
@@ -81,6 +81,6 @@ final class ProviderTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Provider not supported');
 
-        $this->app->get(CircuitBreakerFactory::class);
+        $this->app->make(CircuitBreaker::class);
     }
 }

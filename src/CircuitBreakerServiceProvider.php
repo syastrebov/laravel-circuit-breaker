@@ -2,6 +2,8 @@
 
 namespace CircuitBreaker\Laravel;
 
+use CircuitBreaker\CircuitBreaker;
+use CircuitBreaker\CircuitBreakerConfig;
 use CircuitBreaker\Contracts\ProviderInterface;
 use CircuitBreaker\Enums\Provider;
 use CircuitBreaker\Providers\DatabaseProvider;
@@ -47,17 +49,41 @@ final class CircuitBreakerServiceProvider extends ServiceProvider
 
     private function registerFactory(): void
     {
-        $this->app->singleton(CircuitBreakerFactory::class, function (Container $app) {
+        $this->app->singleton('circuit-breaker.logger', function (Container $app) {
             $logger = $app->make(LogManager::class);
-            if ($channel = $app['config']->get('circuit-breaker.logger.channel')) {
-                $logger = $logger->channel($channel);
+            $channel = $app['config']->get('circuit-breaker.logger.channel');
+
+            return $channel ? $logger->channel($channel) : null;
+        });
+
+        $this->app->bind(CircuitBreaker::class, function (Container $app, array $params) {
+            $prefix = $params[0] ?? 'default';
+            $configs = $app['config']->get('circuit-breaker.configs');
+
+            if (!isset($configs[$prefix]) && $prefix !== 'default') {
+                throw new \RuntimeException("CircuitBreaker configuration not found [$prefix]");
             }
 
-            return new CircuitBreakerFactory(
+            $config = (array) ($configs[$prefix] ?? []);
+
+            return new CircuitBreaker(
                 $app->get(ProviderInterface::class),
-                $app['config']->get('circuit-breaker.configs'),
+                CircuitBreakerConfig::create([
+                    ...$config,
+                    'prefix' => $prefix,
+                ]),
+                $app->get('circuit-breaker.logger')
+            );
+        });
+
+        $this->app->bind(CacheableCircuitBreaker::class, function (Container $app, array $params) {
+            $prefix = $params[0] ?? 'default';
+            $circuitBreaker = $app->make(CircuitBreaker::class, [$prefix]);
+
+            return new CacheableCircuitBreaker(
+                $circuitBreaker,
                 $app->get(Repository::class),
-                $logger
+                $app->get('circuit-breaker.logger')
             );
         });
     }

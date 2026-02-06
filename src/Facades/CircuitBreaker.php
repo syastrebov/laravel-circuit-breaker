@@ -2,18 +2,24 @@
 
 namespace CircuitBreaker\Laravel\Facades;
 
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
+use CircuitBreaker\Laravel\CacheableCircuitBreaker;
 use Illuminate\Support\Facades\Facade;
 
-/**
- * @method static \CircuitBreaker\CircuitBreaker create(string $configName = 'default')
- * @method static \CircuitBreaker\CircuitBreaker createCacheable(string $configName = 'default')
- */
 final class CircuitBreaker extends Facade
 {
     #[\Override]
     protected static function getFacadeAccessor(): string
     {
-        return CircuitBreakerFactory::class;
+        return \CircuitBreaker\CircuitBreaker::class;
+    }
+
+    public static function make(string $name = 'default'): ?\CircuitBreaker\CircuitBreaker
+    {
+        return self::$app?->make(\CircuitBreaker\CircuitBreaker::class, [$name]);
+    }
+
+    public static function makeCacheable(string $name = 'default'): ?CacheableCircuitBreaker
+    {
+        return self::$app?->make(CacheableCircuitBreaker::class, [$name]);
     }
 }

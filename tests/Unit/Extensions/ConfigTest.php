@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Extensions;
 
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
+use CircuitBreaker\CircuitBreaker;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
 use Tests\TestCase;
 
@@ -67,15 +67,14 @@ final class ConfigTest extends TestCase
     {
         $this->app['config']->set('circuit-breaker.configs.custom', null);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('CircuitBreaker configuration not found [custom]');
 
-        $factory = $this->app->make(CircuitBreakerFactory::class);
-        $factory->create('custom');
+        $this->app->make(CircuitBreaker::class, ['custom']);
     }
 
     private function assertConfig(
-        string $configName,
+        string $prefix,
         int $retries,
         int $closedThreshold,
         int $halfOpenThreshold,
@@ -83,12 +82,12 @@ final class ConfigTest extends TestCase
         int $openTimeout,
         bool $fallbackOrNull
     ): void {
-        $factory = $this->app->get(CircuitBreakerFactory::class);
-        $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
+        $circuit = $this->app->make(CircuitBreaker::class, [$prefix]);
+        $this->assertInstanceOf(CircuitBreaker::class, $circuit);
 
-        $config = $factory->create($configName)->getConfig();
+        $config = $circuit->getConfig();
 
-        $this->assertEquals($configName, $config->prefix);
+        $this->assertEquals($prefix, $config->prefix);
         $this->assertEquals($retries, $config->retries);
         $this->assertEquals($closedThreshold, $config->closedThreshold);
         $this->assertEquals($halfOpenThreshold, $config->halfOpenThreshold);

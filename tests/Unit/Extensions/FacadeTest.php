@@ -12,7 +12,7 @@ final class FacadeTest extends TestCase
     #[DefineEnvironment('useMemoryProvider')]
     public function testFacadeWithoutName(): void
     {
-        $circuit = CircuitBreaker::create();
+        $circuit = CircuitBreaker::make();
         $this->assertInstanceOf(\CircuitBreaker\CircuitBreaker::class, $circuit);
         $this->assertEquals('default', $circuit->getConfig()->prefix);
     }
@@ -29,7 +29,7 @@ final class FacadeTest extends TestCase
             'fallback_or_null' => false,
         ]);
 
-        $circuit = CircuitBreaker::create('custom');
+        $circuit = CircuitBreaker::make('custom');
         $this->assertInstanceOf(\CircuitBreaker\CircuitBreaker::class, $circuit);
         $this->assertEquals('custom', $circuit->getConfig()->prefix);
     }
@@ -37,7 +37,7 @@ final class FacadeTest extends TestCase
     #[DefineEnvironment('useMemoryProvider')]
     public function testCacheableFacadeWithoutName(): void
     {
-        $cacheableCircuit = CircuitBreaker::createCacheable();
+        $cacheableCircuit = CircuitBreaker::makeCacheable();
         $this->assertInstanceOf(CacheableCircuitBreaker::class, $cacheableCircuit);
 
         $circuit = $this->getPrivateProperty($cacheableCircuit, 'circuitBreaker');
@@ -57,7 +57,7 @@ final class FacadeTest extends TestCase
             'fallback_or_null' => false,
         ]);
 
-        $cacheableCircuit = CircuitBreaker::createCacheable('custom');
+        $cacheableCircuit = CircuitBreaker::makeCacheable('custom');
         $this->assertInstanceOf(CacheableCircuitBreaker::class, $cacheableCircuit);
 
         $circuit = $this->getPrivateProperty($cacheableCircuit, 'circuitBreaker');

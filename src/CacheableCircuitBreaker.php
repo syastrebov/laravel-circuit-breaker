@@ -6,12 +6,14 @@ use CircuitBreaker\CircuitBreakerConfig;
 use CircuitBreaker\Contracts\CircuitBreakerInterface;
 use CircuitBreaker\Enums\CircuitBreakerState;
 use Illuminate\Contracts\Cache\Repository;
+use Psr\Log\LoggerInterface;
 
 final readonly class CacheableCircuitBreaker implements CircuitBreakerInterface
 {
     public function __construct(
         private CircuitBreakerInterface $circuitBreaker,
-        private Repository $cache
+        private Repository $cache,
+        private ?LoggerInterface $logger = null
     ) {
     }
 
@@ -58,7 +60,7 @@ final readonly class CacheableCircuitBreaker implements CircuitBreakerInterface
                 try {
                     $this->cache->set($cacheKey, $response);
                 } catch (\Throwable $e) {
-                    // ignore
+                    $this->logger?->error('CacheableCircuitBreaker: ' . $e->getMessage());
                 }
 
                 return $response;
@@ -67,7 +69,7 @@ final readonly class CacheableCircuitBreaker implements CircuitBreakerInterface
                 try {
                     return $this->cache->get($cacheKey);
                 } catch (\Throwable $e) {
-                    // ignore
+                    $this->logger?->error('CacheableCircuitBreaker: ' . $e->getMessage());
                 }
 
                 if ($fallback !== null) {
