@@ -23,7 +23,7 @@ final class ProviderTest extends TestCase
     {
         $factory = $this->app->get(CircuitBreakerFactory::class);
         $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
-        $this->assertInstanceOf(MemoryProvider::class, $this->getProvider($factory->create('default')));
+        $this->assertInstanceOf(MemoryProvider::class, $this->getProvider($factory->create()));
     }
 
     #[DefineEnvironment('useRedisProvider')]
@@ -33,7 +33,7 @@ final class ProviderTest extends TestCase
 
         $factory = $this->app->get(CircuitBreakerFactory::class);
         $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
-        $this->assertInstanceOf(RedisProvider::class, $this->getProvider($factory->create('default')));
+        $this->assertInstanceOf(RedisProvider::class, $this->getProvider($factory->create()));
     }
 
     #[DefineEnvironment('useMemcachedProvider')]
@@ -41,7 +41,7 @@ final class ProviderTest extends TestCase
     {
         $factory = $this->app->get(CircuitBreakerFactory::class);
         $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
-        $this->assertInstanceOf(MemcachedProvider::class, $this->getProvider($factory->create('default')));
+        $this->assertInstanceOf(MemcachedProvider::class, $this->getProvider($factory->create()));
     }
 
     #[DefineEnvironment('useDatabaseProvider')]
