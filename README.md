@@ -1,4 +1,6 @@
-Laravel package for https://github.com/syastrebov/circuit-breaker
+PHP Circuit Breaker implementation for microservices and API calls.
+
+Laravel package for https://github.com/syastrebov/circuit-breaker library.
 
 ## Install
 
@@ -13,7 +15,7 @@ php artisan vendor:publish --provider="CircuitBreaker\\Laravel\\CircuitBreakerSe
 ~~~php
 return [
 
-    // Supported drivers (redis, memcached, database, memory) 
+    // Supported drivers (redis, predis, memcached, database, memory) 
     'driver' => 'redis',
     
     'logger' => [
