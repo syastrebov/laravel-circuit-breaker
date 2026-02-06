@@ -9,5 +9,6 @@
 /phpunit.xml export-ignore
 /.phpunit.result.cache export-ignore
 /phpstan.neon.dist export-ignore
+/psalm.xml export-ignore
 /CHANGELOG.md export-ignore
 /README.md export-ignore
