@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Extensions;
 
 use CircuitBreaker\Laravel\CircuitBreakerFactory;
 use Orchestra\Testbench\Attributes\DefineEnvironment;

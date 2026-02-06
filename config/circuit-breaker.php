@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use CircuitBreaker\Enums\Provider;
+
 return [
 
-    'driver' => 'memory',
+    'provider' => Provider::Memory->value,
 
     'logger' => [
         'channel' => '',

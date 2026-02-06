@@ -28,5 +28,8 @@ jobs:
       - name: Psalm
         run: docker compose exec -t php vendor/bin/psalm
 
-      - name: Run phpunit
-        run: docker compose exec -t php vendor/bin/phpunit
+      - name: Run phpunit (with extensions)
+        run: docker compose exec -t php vendor/bin/phpunit tests/Unit/Extensions
+
+      - name: Run phpunit (no extensions)
+        run: docker compose exec -t php-no-ext vendor/bin/phpunit tests/Unit/NoExtensions

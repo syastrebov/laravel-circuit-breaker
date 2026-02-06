@@ -1,4 +1,10 @@
-FROM php:8.3-cli
+FROM php:8.3-cli AS no-ext
+
+WORKDIR /var/www
+ENTRYPOINT []
+CMD ["bash"]
+
+FROM no-ext AS ext
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
@@ -11,8 +17,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-enable redis \
     && docker-php-ext-enable memcached \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql \
-    && docker-php-ext-enable pdo_mysql
-
-WORKDIR /var/www
-ENTRYPOINT []
-CMD ["bash"]
+    && docker-php-ext-enable pdo_mysql \

@@ -1,14 +1,12 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Extensions;
 
-use CircuitBreaker\CircuitBreaker;
-use CircuitBreaker\Contracts\ProviderInterface;
+use CircuitBreaker\Laravel\CircuitBreakerFactory;
 use CircuitBreaker\Providers\DatabaseProvider;
 use CircuitBreaker\Providers\MemcachedProvider;
 use CircuitBreaker\Providers\MemoryProvider;
 use CircuitBreaker\Providers\RedisProvider;
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
 use Orchestra\Testbench\Attributes\DefineEnvironment;
 use Tests\TestCase;
 
@@ -28,19 +26,19 @@ final class ProviderTest extends TestCase
         $this->assertInstanceOf(MemoryProvider::class, $this->getProvider($factory->create('default')));
     }
 
+    #[DefineEnvironment('useRedisProvider')]
     public function testRedisProvider(): void
     {
-        $this->app['config']->set('circuit-breaker.driver', 'redis');
+        $this->app['config']->set('circuit-breaker.provider', 'redis');
 
         $factory = $this->app->get(CircuitBreakerFactory::class);
         $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
         $this->assertInstanceOf(RedisProvider::class, $this->getProvider($factory->create('default')));
     }
 
+    #[DefineEnvironment('useMemcachedProvider')]
     public function testMemcachedProvider(): void
     {
-        $this->app['config']->set('circuit-breaker.driver', 'memcached');
-
         $factory = $this->app->get(CircuitBreakerFactory::class);
         $this->assertInstanceOf(CircuitBreakerFactory::class, $factory);
         $this->assertInstanceOf(MemcachedProvider::class, $this->getProvider($factory->create('default')));
@@ -78,16 +76,11 @@ final class ProviderTest extends TestCase
 
     public function testUnknownProvider(): void
     {
-        $this->app['config']->set('circuit-breaker.driver', 'unknown');
+        $this->app['config']->set('circuit-breaker.provider', 'unknown');
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Driver not supported');
+        $this->expectExceptionMessage('Provider not supported');
 
         $this->app->get(CircuitBreakerFactory::class);
-    }
-
-    protected function getProvider(CircuitBreaker $circuitBreaker): ProviderInterface
-    {
-        return $this->getPrivateProperty($circuitBreaker, 'provider');
     }
 }

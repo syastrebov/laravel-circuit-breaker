@@ -15,6 +15,20 @@ services:
 
   php:
     build:
+      target: ext
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - redis
+      - memcached
+      - mysql
+    stdin_open: true
+
+  php-no-ext:
+    build:
+      target: no-ext
       context: .
       dockerfile: ./docker/php/Dockerfile
     volumes:

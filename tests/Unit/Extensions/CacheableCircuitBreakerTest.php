@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Extensions;
 
 use CircuitBreaker\Enums\CircuitBreakerState;
 use CircuitBreaker\Laravel\CircuitBreakerFactory;

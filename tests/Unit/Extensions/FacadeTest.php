@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Extensions;
 
 use CircuitBreaker\Laravel\CacheableCircuitBreaker;
 use CircuitBreaker\Laravel\Facades\CircuitBreaker;
