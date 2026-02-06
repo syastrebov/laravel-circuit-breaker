@@ -52,13 +52,13 @@ return [
 #### Default config:
 
 ~~~php
-use CircuitBreaker\Laravel\CircuitBreakerFactory;
+use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
-public function request(CircuitBreakerFactory $circuitBreaker): string
+public function request(): string
 {
     try {
         // creates default config
-        return $circuitBreaker->create()->run('test', static function () {
+        return CircuitBreaker::make()->run('test', static function () {
             return '{"response": "data"}';
         });
     } catch (UnableToProcessException $e) {
@@ -93,7 +93,7 @@ use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 public function request(): string
 {
     try {
-        return CircuitBreaker::create('api')->run('test', static function () {
+        return CircuitBreaker::make('api')->run('test', static function () {
             return '{"response": "data"}';
         });
     } catch (UnableToProcessException $e) {
@@ -109,7 +109,7 @@ use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
 public function request(): string
 {
-    return CircuitBreaker::create()->run(
+    return CircuitBreaker::make()->run(
         '{endpoint}',
         static function () {
             return (string) (new Client)->get('https://domain/api/{endpoint}')->getBody();
@@ -132,7 +132,7 @@ use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
 public function request(): string
 {
-    return CircuitBreaker::create()->run(
+    return CircuitBreaker::make()->run(
         '{endpoint}',
         static function () {
             $response = (string) (new Client)->get('https://{domain}/api/{endpoint}')->getBody();
@@ -154,7 +154,7 @@ use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
 public function request(): string
 {
-    return CircuitBreaker::createCacheable()->run('{endpoint}', static function () {
+    return CircuitBreaker::makeCacheable()->run('{endpoint}', static function () {
         return (string) (new Client)->get('https://{domain}/api/{endpoint}')->getBody();
     });
 }
@@ -193,14 +193,14 @@ use CircuitBreaker\Laravel\Facades\CircuitBreaker;
 
 public function requestApi1(): string
 {
-    return CircuitBreaker::createCacheable('api1')->run('/users', static function () {
+    return CircuitBreaker::makeCacheable('api1')->run('/users', static function () {
         return (string) (new Client)->get('https://{api1.domain}/api/users')->getBody();
     });
 }
 
 public function requestApi2(): string
 {
-    return CircuitBreaker::createCacheable('api2')->run('/users', static function () {
+    return CircuitBreaker::makeCacheable('api2')->run('/users', static function () {
         return (string) (new Client)->get('https://{api2.domain}/api/users')->getBody();
     });
 }
