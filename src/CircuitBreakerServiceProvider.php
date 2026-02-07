@@ -78,10 +78,9 @@ final class CircuitBreakerServiceProvider extends ServiceProvider
 
         $this->app->bind(CacheableCircuitBreaker::class, function (Container $app, array $params) {
             $prefix = $params[0] ?? 'default';
-            $circuitBreaker = $app->make(CircuitBreaker::class, [$prefix]);
 
             return new CacheableCircuitBreaker(
-                $circuitBreaker,
+                $app->make(CircuitBreaker::class, [$prefix]),
                 $app->get(Repository::class),
                 $app->get('circuit-breaker.logger')
             );
